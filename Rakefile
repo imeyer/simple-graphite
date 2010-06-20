@@ -8,7 +8,7 @@ begin
     gem.summary = %Q{Simple hook into graphite}
     gem.description = %Q{Exposes methods to send data to graphite}
     gem.email = "ianmmeyer@gmail.com"
-    gem.homepage = "http://github.com/ianmmeyer/simple-graphite"
+    gem.homepage = "http://github.com/imeyer/simple-graphite"
     gem.authors = ["Ian Meyer"]
     gem.files = FileList['**/*.rb']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings

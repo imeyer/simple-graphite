@@ -17,4 +17,12 @@ class Graphite
   def hostname
     Socket.gethostname
   end
+
+  def self.time_now
+    @time = Time.now.to_i
+  end
+
+  def time_now
+    self.time_now
+  end
 end

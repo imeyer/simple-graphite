@@ -13,7 +13,7 @@ or
 
 To push data to Graphite:
     g.push_to_graphite do |socket|
-      socket.puts "your.metric.name 3.1415926 #{g.time}"
+      socket.puts "your.metric.name 3.1415926 #{g.time_now}"
     end
 
 == Note on Patches/Pull Requests
