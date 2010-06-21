@@ -1,6 +1,6 @@
 = simple-graphite
 
-A simple interface into [Graphite](http://graphite.wikidot.com).
+A simple interface into [Graphite] (http://graphite.wikidot.com).
 
 = How-to
 
