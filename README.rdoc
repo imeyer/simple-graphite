@@ -12,8 +12,8 @@ or
     g.port = 2003
 
 To push data to Graphite:
-    g.push_to_graphite do |socket|
-      socket.puts "your.metric.name 3.1415926 #{g.time_now}"
+    g.push_to_graphite do |graphite|
+      graphite.puts "your.metric.name 3.1415926 #{g.time_now}"
     end
 
 == Note on Patches/Pull Requests
@@ -24,7 +24,7 @@ To push data to Graphite:
   future version unintentionally.
 * Commit, do not mess with rakefile, version, or history.
   (if you want to have your own version, that is fine but
-   bump version in a commit by itself I can ignore when I pull)
+  bump version in a commit by itself I can ignore when I pull)
 * Send me a pull request. Bonus points for topic branches.
 
 == Copyright
