@@ -23,6 +23,6 @@ class Graphite
   end
 
   def time_now
-    self.time_now
+    self.class.time_now
   end
 end
