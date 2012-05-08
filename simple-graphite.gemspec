@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "lib/simple-graphite.rb",
-    "spec/simple-graphite_test.rb",
-    "spec/test_helper.rb"
+    "spec/simple-graphite_spec.rb",
+    "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/imeyer/simple-graphite}
   s.rdoc_options = ["--charset=UTF-8"]
