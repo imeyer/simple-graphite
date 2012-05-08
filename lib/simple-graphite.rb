@@ -7,7 +7,7 @@ class Graphite
 
   def initialize(options = {})
     @host = options[:host]
-    @port = options[:port]
+    @port = options[:port] || 2003
     @time = Time.now.to_i
   end
 
