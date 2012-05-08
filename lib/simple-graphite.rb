@@ -12,6 +12,7 @@ class Graphite
   end
 
   def push_to_graphite
+    raise "You need to provide both the hostname and the port" if @host.nil? || @port.nil?
     socket = TCPSocket.new(@host, @port)
     yield socket
     socket.close
@@ -19,7 +20,10 @@ class Graphite
 
   def send_metrics(metrics_hash)
     current_time = time_now
-    push_to_graphite {(metrics_hash.map { |k,v| [k, v, current_time, '\n'] }).join(' ')}
+    push_to_graphite do |graphite|
+      graphite.puts((metrics_hash.map { |k,v| [k, v, current_time].join(' ') + "\n" }).join(''))
+    end
+    current_time
   end
 
   def hostname
