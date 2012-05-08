@@ -1,7 +1,10 @@
 require 'socket'
 
+
 class Graphite
+
   attr_accessor :host, :port, :time
+
   def initialize(options = {})
     @host = options[:host]
     @port = options[:port]
@@ -12,6 +15,11 @@ class Graphite
     socket = TCPSocket.new(@host, @port)
     yield socket
     socket.close
+  end
+
+  def send_metrics(metrics_hash)
+    current_time = time_now
+    push_to_graphite {(metrics_hash.map { |k,v| [k, v, current_time, '\n'] }).join(' ')}
   end
 
   def hostname
