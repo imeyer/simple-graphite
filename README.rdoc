@@ -16,6 +16,12 @@ To push data to Graphite:
       graphite.puts "your.metric.name 3.1415926 #{g.time_now}"
     end
 
+Or:
+    g.send_metrics({
+      'foo.bar1' => 250,
+      'foo.bar2' => 114
+    })
+
 == Note on Patches/Pull Requests
  
 * Fork the project.

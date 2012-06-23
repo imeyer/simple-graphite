@@ -18,8 +18,8 @@ Gem::Specification.new do |s|
   ]
   s.files = [
     "lib/simple-graphite.rb",
-     "test/simple-graphite_test.rb",
-     "test/test_helper.rb"
+    "spec/simple-graphite_spec.rb",
+    "spec/spec_helper.rb"
   ]
   s.homepage = %q{http://github.com/imeyer/simple-graphite}
   s.rdoc_options = ["--charset=UTF-8"]
@@ -27,9 +27,12 @@ Gem::Specification.new do |s|
   s.rubygems_version = %q{1.3.7}
   s.summary = %q{Simple hook into graphite}
   s.test_files = [
-    "test/test_helper.rb",
-     "test/simple-graphite_test.rb"
+    "spec/spec_helper.rb",
+    "spec/simple-graphite_spec.rb"
   ]
+
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec-mocks"
 
   if s.respond_to? :specification_version then
     current_version = Gem::Specification::CURRENT_SPECIFICATION_VERSION
