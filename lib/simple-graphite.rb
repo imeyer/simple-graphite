@@ -3,17 +3,18 @@ require 'socket'
 
 class Graphite
 
-  attr_accessor :host, :port, :time
+  attr_accessor :host, :port, :time, :source
 
   def initialize(options = {})
-    @host = options[:host]
-    @port = options[:port] || 2003
+    @host   = options[:host]
+    @port   = options[:port] || 2003
+    @source = options[:source] || nil
     @time = Time.now.to_i
   end
 
   def push_to_graphite
     raise "You need to provide both the hostname and the port" if @host.nil? || @port.nil?
-    socket = TCPSocket.new(@host, @port)
+    socket = TCPSocket.new(@host, @port, @source)
     yield socket
     socket.close
   end
