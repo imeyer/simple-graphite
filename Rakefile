@@ -1,47 +1,71 @@
 require 'rubygems'
+require 'rubygems/package_task'
 require 'rake'
+require 'rdoc/task'
+require 'rspec'
+require 'rspec/core/rake_task'
 
-begin
-  require 'jeweler'
-  Jeweler::Tasks.new do |gem|
-    gem.name = "simple-graphite"
-    gem.summary = %Q{Simple hook into graphite}
-    gem.description = %Q{Exposes methods to send data to graphite}
-    gem.email = "ianmmeyer@gmail.com"
-    gem.homepage = "http://github.com/imeyer/simple-graphite"
-    gem.authors = ["Ian Meyer"]
-    gem.files = FileList['**/*.rb']
-    # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
-  end
-rescue LoadError
-  puts "Jeweler (or a dependency) not available. Install it with: sudo gem install jeweler"
+# Use rake to build the gemspec as required
+spec = Gem::Specification.new do |s|
+  s.name = "simple-graphite"
+  s.summary = %q{Simple hook into graphite}
+  s.description = %q{Simple methods for sending data to graphite over TCP or UDP}
+  s.email = "ianmmeyer@gmail.com"
+  s.homepage = "http://github.com/imeyer/simple-graphite"
+  s.authors = ["Ian Meyer"]
+  s.files = FileList['**/*.rb']
+  s.license = "MIT"
+  s.version = File.exist?('VERSION') ? File.read('VERSION') : ""
+
+  s.extra_rdoc_files = [
+    "LICENSE",
+     "README.rdoc"
+  ]
+
+  s.rdoc_options = ["--charset=UTF-8"]
+  s.require_paths = ["lib"]
+  s.rubygems_version = %q{1.3.7}
+  s.test_files = [
+    "spec/spec_helper.rb",
+    "spec/simple-graphite_spec.rb"
+  ]
+
+  s.add_development_dependency "rspec"
+  s.add_development_dependency "rspec-mocks"
+  s.test_files = Dir.glob("{spec,test}/**/*.rb")
+end
+Gem::PackageTask.new(spec).define
+
+
+# Define the rspec tasks for tests
+RSpec::Core::RakeTask.new(:spec)
+task :default => :spec
+
+
+# RCov tasks; ensure code coverage
+desc "Run all specs and generate simplecov report"
+task :cov do |t|
+  ENV['COVERAGE'] = 'true'
+  Rake::Task["spec"].execute
+  `open coverage/index.html`
 end
 
-require 'rake/testtask'
-Rake::TestTask.new(:test) do |test|
-  test.libs << 'simple-graphite.rb'
-  test.pattern = 'test/**/*_test.rb'
-  test.verbose = true
-end
 
-begin
-  require 'rcov/rcovtask'
-  Rcov::RcovTask.new do |test|
-    test.libs << 'test'
-    test.pattern = 'test/**/*_test.rb'
-    test.verbose = true
-  end
-rescue LoadError
-  task :rcov do
-    abort "RCov is not available. In order to run rcov, you must: sudo gem install spicycode-rcov"
+# Define gemspec to automatically create
+# a new 'simple-graphite.gemspec'
+def generate_gemspec(spec)
+  File.open("#{spec.name}.gemspec", "w") do |file|
+    file.puts spec.to_ruby
   end
 end
 
-task :test => :check_dependencies
+desc "Generate a new gemspec file"
+task :gemspec do
+  generate_gemspec spec
+end
 
-task :default => :test
 
-require 'rake/rdoctask'
+# Define rdoc tasks
 Rake::RDocTask.new do |rdoc|
   if File.exist?('VERSION')
     version = File.read('VERSION')
