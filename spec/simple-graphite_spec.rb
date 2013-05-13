@@ -40,4 +40,9 @@ describe Graphite do
     ftcp.buffer.should == "foo.bar 200 #{time}\nfoo.test 10.2 #{time}\n"
   end
 
+  it "returns a valid hostname" do
+    a = Graphite.new
+    a.hostname.should == Socket.gethostname
+  end
+
 end

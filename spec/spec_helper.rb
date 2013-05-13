@@ -1,3 +1,8 @@
+if ENV["COVERAGE"]
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'socket'
 
 RSpec.configure do |config|
@@ -33,7 +38,7 @@ class FakeTCPSocket
 
   def close
   end
-  
+
   def puts(some_text)
     @buffer += some_text
   end
