@@ -1,3 +1,8 @@
+if ENV["COVERAGE"]
+  require 'simplecov'
+  SimpleCov.start
+end
+
 require 'socket'
 
 RSpec.configure do |config|
