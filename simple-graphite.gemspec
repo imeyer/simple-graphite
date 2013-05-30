@@ -2,11 +2,11 @@
 
 Gem::Specification.new do |s|
   s.name = "simple-graphite"
-  s.version = "2.0.0"
+  s.version = "2.1.0"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Ian Meyer"]
-  s.date = "2013-05-27"
+  s.date = "2013-05-30"
   s.description = "Simple methods for sending data to graphite over TCP or UDP"
   s.email = "ianmmeyer@gmail.com"
   s.extra_rdoc_files = ["LICENSE", "README.rdoc"]
