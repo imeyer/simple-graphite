@@ -14,9 +14,12 @@ class Graphite
 
   def push_to_graphite
     raise "You need to provide a hostname" if @host.nil?
-    socket = Graphite::Socket.new @host, @port, @type
-    yield socket
-    socket.close
+    begin
+      socket = Graphite::Socket.new @host, @port, @type
+      yield socket
+    ensure
+      socket.close
+    end
   end
 
   def send_metrics(metrics_hash)

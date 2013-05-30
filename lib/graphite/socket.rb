@@ -12,27 +12,29 @@ class Graphite
     end
 
     def puts(event)
-      begin
-        connect unless @socket
-        @socket.write("#{event}")
-      ensure
-        close
-      end
+      socket.write("#{event}")
+      close if @type == :udp
     end
 
     def close
-      @socket && @socket.close
+      @socket.close if @socket and !@socket.closed?
     rescue => e
       warn "#{self.class} - #{e.class} - #{e.message}"
     end
 
-    def connect
+    def socket
+      return @socket if @socket && !@socket.closed?
       @socket = case @type
-      when :udp then UDPSocket.new.tap {|s| s.connect(@host, @port)}
-      when :tcp then TCPSocket.new(@host, @port)
-      else
-        raise NameError, "#{@type} is invalid; must be udp or tcp"
-      end
+        when :udp then UDPSocket.new.tap {|s| s.connect(@host, @port)}
+        when :tcp then TCPSocket.new(@host, @port)
+        else
+          raise NameError, "#{@type} is invalid; must be udp or tcp"
+        end
+    end
+
+    # Retained for compatibility
+    def connect
+      socket
     end
   end
 end
