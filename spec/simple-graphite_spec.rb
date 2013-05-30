@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'socket'
 require 'simple-graphite'
 
 describe Graphite do
@@ -23,48 +24,6 @@ describe Graphite do
     expect {a.push_to_graphite{|g| g.puts "hello world"}}.to raise_error(NameError, "fake is invalid; must be udp or tcp")
   end
 
-  it "sends individual metrics to graphite over TCP" do
-    ftcp = mock_tcp
-    a = Graphite.new(:host => 'localhost', :type => :tcp)
-    a.push_to_graphite do |graphite|
-      graphite.puts "hello world"
-    end
-
-    ftcp.buffer.should == "hello world"
-  end
-
-  it "sends a hash of metrics to graphite over TCP" do
-    ftcp = mock_tcp
-    a = Graphite.new(:host => 'localhost', :type => :tcp)
-
-    time = a.send_metrics({
-      'foo.bar' => 200,
-      'foo.test' => 10.2
-    })
-    ftcp.buffer.should == "foo.bar 200 #{time}\nfoo.test 10.2 #{time}\n"
-  end
-
-  it "sends individual metrics to graphite over UDP" do
-    fudp = mock_udp
-    a = Graphite.new(:host => 'localhost', :type => :udp)
-    a.push_to_graphite do |graphite|
-      graphite.puts "hello world"
-    end
-
-    fudp.buffer.should == "hello world"
-  end
-
-  it "sends a hash of metrics to graphite over UDP" do
-    fudp = mock_udp
-    a = Graphite.new(:host => 'localhost', :type => :udp)
-
-    time = a.send_metrics({
-      'foo.bar' => 200,
-      'foo.test' => 10.2
-    })
-    fudp.buffer.should == "foo.bar 200 #{time}\nfoo.test 10.2 #{time}\n"
-  end
-
   it "requires a hostname" do
     a = Graphite.new
     expect {a.push_to_graphite}.to raise_error(RuntimeError, "You need to provide a hostname")
@@ -73,6 +32,86 @@ describe Graphite do
   it "returns time accurately" do
     a = Graphite.new
     a.time_now.should == Time.now.to_i
+  end
+
+  describe "over TCP" do
+    before do
+      @ftcp = FakeTCPSocket.new
+    end
+
+    after do
+      @ftcp.close
+    end
+
+    it "sends individual metrics to graphite" do
+      a = Graphite.new(:host => 'localhost', :type => :tcp, :port => 12003)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello world\n"
+      end
+
+      @ftcp.buffer.should == "hello world\n"
+    end
+
+    it "sends multiple metrics to graphite" do
+      a = Graphite.new(:host => 'localhost', :type => :tcp, :port => 12003)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello\n"
+        graphite.puts "world\n"
+      end
+
+      @ftcp.buffer.should == "hello\nworld\n"
+    end
+
+    it "sends a hash of metrics to graphite" do
+      a = Graphite.new(:host => 'localhost', :type => :tcp, :port => 12003)
+
+      time = a.send_metrics({
+        'foo.bar' => 200,
+        'foo.test' => 10.2
+      })
+
+      @ftcp.buffer.should == "foo.bar 200 #{time}\nfoo.test 10.2 #{time}\n"
+    end
+  end
+
+  describe "over UDP" do
+    before do
+      @fudp = FakeUDPSocket.new
+    end
+
+    after do
+      @fudp.close
+    end
+
+    it "sends individual metrics to graphite" do
+      a = Graphite.new(:host => 'localhost', :type => :udp, :port => 18125)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello world\n"
+      end
+
+      @fudp.buffer.should == "hello world\n"
+    end
+
+    it "sends multiple metrics to graphite" do
+      a = Graphite.new(:host => 'localhost', :type => :udp, :port => 18125)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello\n"
+        graphite.puts "world\n"
+      end
+
+      @fudp.buffer.should == "hello\nworld\n"
+    end
+
+    it "sends a hash of metrics to graphite" do
+      a = Graphite.new(:host => 'localhost', :type => :udp, :port => 18125)
+
+      time = a.send_metrics({
+        'foo.bar' => 200,
+        'foo.test' => 10.2
+      })
+
+      @fudp.buffer.should == "foo.bar 200 #{time}\nfoo.test 10.2 #{time}\n"
+    end
   end
 
 end

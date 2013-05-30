@@ -14,65 +14,39 @@ RSpec.configure do |config|
   config.formatter = :documentation # :progress, :html, :textmate
 end
 
-TCP_NEW = TCPSocket.method(:new) unless defined? TCP_NEW
-UDP_NEW = UDPSocket.method(:new) unless defined? UDP_NEW
-
-class FakeSockets
-  attr :buffer, true
-
+class FakeTCPSocket
   def initialize
-    @buffer = ""
+    @sock = TCPServer.new(12003)
   end
 
-  def readline
-  end
-
-  def flush
-  end
-
-  def write(some_text)
-    @buffer += some_text
-  end
-
-  def readchar
-  end
-
-  def read(num)
+  def buffer
+    buf = @sock.accept
+    buf.read_nonblock(65535)
   end
 
   def close
-  end
-
-  def puts(some_text)
-    @buffer += some_text
-  end
-
-end
-
-class FakeTCPSocket < FakeSockets
-end
-
-class FakeUDPSocket < FakeSockets
-  def connect(host, port)
+    @sock.close
   end
 end
 
-def mock_tcp
-  ftcp = FakeTCPSocket.new
-  TCPSocket.stub!(:new).and_return { ftcp }
-  ftcp
-end
+class FakeUDPSocket
+  def initialize
+    @sock = UDPSocket.new
+    @sock.bind(nil, 18125)
+  end
 
-def unmock_tcp
-  TCPSocket.stub!(:new).and_return {TCP_NEW.call}
-end
+  def buffer
+    buf = Array.new
+    begin
+      while pkt = @sock.recvfrom_nonblock(65535)
+        buf << pkt
+      end
+    rescue IO::WaitReadable
+    end
+    buf.map{|p| p.first}.join()
+  end
 
-def mock_udp
-  fudp = FakeUDPSocket.new
-  UDPSocket.stub!(:new).and_return { fudp }
-  fudp
-end
-
-def unmock_udp
-  UDPSocket.stub!(:new).and_return {UDP_NEW.call}
+  def close
+    @sock.close
+  end
 end
