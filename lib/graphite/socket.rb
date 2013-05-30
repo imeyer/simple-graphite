@@ -12,7 +12,7 @@ class Graphite
     end
 
     def puts(event)
-      socket.write("#{event}")
+      socket.write(terminated_event(event.to_s))
       close if @type == :udp
     end
 
@@ -30,6 +30,10 @@ class Graphite
         else
           raise NameError, "#{@type} is invalid; must be udp or tcp"
         end
+    end
+
+    def terminated_event(event)
+      event =~ /\n$/ ? event : event + "\n"
     end
 
     # Retained for compatibility
