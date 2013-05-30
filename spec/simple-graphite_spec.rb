@@ -52,11 +52,30 @@ describe Graphite do
       @ftcp.buffer.should == "hello world\n"
     end
 
+    it "terminates individual metrics with newlines" do
+      a = Graphite.new(:host => 'localhost', :type => :tcp, :port => 12003)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello world"
+      end
+
+      @ftcp.buffer.should == "hello world\n"
+    end
+
     it "sends multiple metrics to graphite" do
       a = Graphite.new(:host => 'localhost', :type => :tcp, :port => 12003)
       a.push_to_graphite do |graphite|
         graphite.puts "hello\n"
         graphite.puts "world\n"
+      end
+
+      @ftcp.buffer.should == "hello\nworld\n"
+    end
+
+    it "terminates multiple metrics with newlines" do
+      a = Graphite.new(:host => 'localhost', :type => :tcp, :port => 12003)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello"
+        graphite.puts "world"
       end
 
       @ftcp.buffer.should == "hello\nworld\n"
@@ -92,11 +111,30 @@ describe Graphite do
       @fudp.buffer.should == "hello world\n"
     end
 
+    it "terminates individual metrics with newlines" do
+      a = Graphite.new(:host => 'localhost', :type => :udp, :port => 18125)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello world"
+      end
+
+      @fudp.buffer.should == "hello world\n"
+    end
+
     it "sends multiple metrics to graphite" do
       a = Graphite.new(:host => 'localhost', :type => :udp, :port => 18125)
       a.push_to_graphite do |graphite|
         graphite.puts "hello\n"
         graphite.puts "world\n"
+      end
+
+      @fudp.buffer.should == "hello\nworld\n"
+    end
+
+    it "terminates multiple metrics with newlines" do
+      a = Graphite.new(:host => 'localhost', :type => :udp, :port => 18125)
+      a.push_to_graphite do |graphite|
+        graphite.puts "hello"
+        graphite.puts "world"
       end
 
       @fudp.buffer.should == "hello\nworld\n"
