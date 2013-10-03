@@ -2,9 +2,11 @@
 
 A simple interface to {Graphite}[http://graphite.wikidot.com].
 
+Compatible with 1.9.x, 2.0.x, and 2.1.0-preview1.
+
 = How-to
 
-    %w{rubygems simple-graphite}.each { |l| require l }
+    %w{simple-graphite}.each { |l| require l } # Must require rubygems on < 1.9.x
     g = Graphite.new({:host => "your.graphite.host", :port => 2003})
 or
     g = Graphite.new
