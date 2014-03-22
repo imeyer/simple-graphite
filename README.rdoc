@@ -4,6 +4,8 @@ A simple interface to {Graphite}[http://graphite.wikidot.com].
 
 Compatible with 1.9.x, 2.0.x, and 2.1.0-preview1.
 
+{<img src="https://drone.io/github.com/imeyer/simple-graphite/status.png"/>}[https://drone.io/github.com/imeyer/simple-graphite/latest]
+
 = How-to
 
     %w{simple-graphite}.each { |l| require l } # Must require rubygems on < 1.9.x
